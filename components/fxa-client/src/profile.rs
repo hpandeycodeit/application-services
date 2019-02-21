@@ -9,6 +9,12 @@ use crate::{errors::*, scopes, util, CachedResponse, FirefoxAccount};
 const PROFILE_FRESHNESS_THRESHOLD: u64 = 120000; // 2 minutes
 
 impl FirefoxAccount {
+    /// Fetch the profile for the user.
+    /// This method will error-out if the `profile` scope is not
+    /// authorized for the current refresh token or if we don't hold any.
+    ///
+    /// * `ignore_cache` - If set to true, bypass the in-memory cache
+    /// and fetch the entire profile data from the server.
     pub fn get_profile(&mut self, ignore_cache: bool) -> Result<Profile> {
         let profile_access_token = self.get_access_token(scopes::PROFILE)?.token;
         let mut etag = None;
